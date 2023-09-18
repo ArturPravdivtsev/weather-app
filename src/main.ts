@@ -16,10 +16,14 @@ import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import { aliases, fa } from 'vuetify/iconsets/fa';
 import { mdi } from 'vuetify/iconsets/mdi';
-import 'vuetify/styles'
+import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader';
+import 'vuetify/styles';
 
 const vuetify = createVuetify({
-  components,
+  components: {
+    ...components,
+    VSkeletonLoader
+  },
   directives,
   theme: { defaultTheme: 'dark' },
   icons: {

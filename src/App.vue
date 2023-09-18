@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col min-h-screen font-Roboto bg-weather-primary">
-    <AppHeader />
-    <RouterView :cities="cities" />
+    <AppHeader @cityAdd="onAddCity" />
+    <RouterView :cities="cities" :loading="loading" />
   </div>
 </template>
 
@@ -11,103 +11,50 @@ import { RouterLink, RouterView } from 'vue-router';
 import AppHeader from './components/AppHeader.vue';
 
 import { onMounted } from 'vue';
-import axios from 'axios';
 import db from './firebase/firebase';
-import { doc, collection, getDocs, updateDoc } from 'firebase/firestore/lite';
-// import TheWelcome from '../components/TheWelcome.vue'
+import { doc, collection, getDocs, updateDoc, addDoc } from 'firebase/firestore/lite';
+import { toRef } from 'vue';
 
-const API_KEY = 'e8342fbc27f0c7142a735e56dc61c04b';
-// const city = 'Moscow';
+import { getCityWeather } from './lib/api';
+
+
 const cities:object[] = reactive([]);
+let loading = toRef(true);
 
-async function getCityWeather() {
+async function getWeather() {
   const citiesCol = collection(db, 'cities');
   const citySnapshot = await getDocs(citiesCol);
 
   citySnapshot.docs.forEach(async (document) => {
     const city = document.data();
-    // if (!city.currentWeather) {
-      try {
-        const response = await axios.get(
-          `https://api.openweathermap.org/data/2.5/weather?q=${city.city}&units=metric&appid=${API_KEY}`
-        );
-        const data = response.data;
-        const docRef = doc(db, 'cities', document.id);
-        updateDoc(docRef, { currentWeather: data })
-          .then(() => cities.push(city));
-      } catch (err) {
-        console.log(err)
-      }
-    // }
+    try {
+      const data = await getCityWeather(city.city);
+      const docRef = doc(db, 'cities', document.id);
+      updateDoc(docRef, { currentWeather: data })
+        .then(() => cities.push(city));
+    } catch (err) {
+      console.log(err)
+    }
   });
   console.log(cities)
+  loading.value = !loading.value;
+}
+
+async function onAddCity(city:string) {
+  const data = await getCityWeather(city);
+  console.log('data', data)
+  const newCity = {
+    city: city,
+    currentWeather: data
+  };
+  await addDoc(collection(db, "cities"), newCity);
+  cities.push(newCity);
 }
 
 onMounted(() => {
-  getCityWeather();
+  getWeather();
 })
 </script>
 
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
 </style>
