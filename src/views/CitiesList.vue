@@ -2,7 +2,8 @@
 import CityCard from "../components/CityCard.vue";
 defineProps<{
   cities: object[],
-  loading: boolean
+  loading: boolean,
+  isEdit: boolean
 }>();
 </script>
 
@@ -32,6 +33,7 @@ defineProps<{
       >
         <CityCard
           :city="city"
+          :isEdit="isEdit"
         />
       </v-col>
     </v-row>

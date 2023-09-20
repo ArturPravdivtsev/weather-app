@@ -4,16 +4,6 @@
     class="pa-2 ma-2"
   >
     <v-card-item :title="city.city">
-      <!-- <template v-slot:subtitle>
-        <v-icon
-          icon="mdi-alert"
-          size="18"
-          color="error"
-          class="me-1 pb-1"
-        ></v-icon>
-
-        Extreme Weather Alert
-      </template> -->
     </v-card-item>
 
     <v-card-text class="py-0">
@@ -26,11 +16,6 @@
         </v-col>
 
         <v-col cols="6" class="text-right">
-          <!-- <v-icon
-            color="error"
-            icon="mdi-weather-hurricane"
-            size="88"
-          ></v-icon> -->
           <v-img :src="`https://openweathermap.org/img/wn/${icon}@2x.png`" :title="description" />
         </v-col>
       </v-row>
@@ -83,39 +68,35 @@
       <v-btn @click="onExpandClick">
         {{ !expand ? 'Full Report' : 'Hide Report' }}
       </v-btn>
+      <v-spacer></v-spacer>
+      <v-btn
+        v-if="isEdit"
+        icon
+        density="compact"
+        variant="plain"
+        @click="onDeleteClick"
+      >
+        <v-icon>mdi-delete</v-icon>
+      </v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
 <script setup lang="ts">
 import { toRef } from 'vue';
+import db from '../firebase/firebase';
+import { doc, collection, getDocs, updateDoc, addDoc, query, where } from 'firebase/firestore/lite';
+import type { City } from '../lib/lib';
+import { useCitiesStore } from '../stores/cities';
 
-interface Weather {
-  description: string,
-  icon: string,
-  main: string
-}
-interface City {
-  city: string,
-  currentWeather: {
-    weather: [Weather],
-    main: {
-      feels_like: number,
-      humidity: number,
-      pressure: number,
-      temp: number,
-      temp_max: number,
-      temp_min: number
-    },
-    wind: {
-      deg: number,
-      speed: number
-    }
-  }
-}
 const props = defineProps<{
-  city: City
+  city: City,
+  isEdit: boolean
 }>();
+
+const citiesStore = useCitiesStore();
+
+const citiesCol = collection(db, 'cities');
 
 console.log("city.value", props.city)
 let expand = toRef(false);
@@ -134,4 +115,12 @@ const feelsLike:string = `${round(detailed.feels_like)}\xB0C`;
 const onExpandClick = () => {
   expand.value = !expand.value;
 }
+
+const onDeleteClick = () => {
+  citiesStore.removeCity(props.city.city);
+  const q = query(citiesCol, where("city", "==", props.city.city));
+  console.log('q', q)
+  console.log(doc(db, "cities", props.city.city))
+}
+
 </script>

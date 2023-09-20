@@ -11,11 +11,17 @@
 
     <v-spacer></v-spacer>
 
-    <v-btn icon>
+    <v-btn
+      icon
+      @click="onEditToggle"
+    >
       <v-icon>mdi-pencil</v-icon>
     </v-btn>
 
-    <v-btn icon>
+    <v-btn
+      icon
+      @click="onAppReload"
+    >
       <v-icon>mdi-sync</v-icon>
     </v-btn>
 
@@ -58,16 +64,40 @@
 
 <script setup lang="ts">
 import { toRef } from 'vue';
+import { collection, addDoc } from 'firebase/firestore/lite';
+import { useCitiesStore } from '../stores/cities';
+import { getCityWeather } from '../lib/api';
+import db from '../firebase/firebase';
+
+const props = defineProps<{
+  isEdit: boolean
+}>();
+
+const citiesStore = useCitiesStore();
 
 const emit = defineEmits<{
-  cityAdd: [city: string]
+  cityAdd: [city: string],
+  editToggle: [isEdit: boolean]
 }>();
 
 let dialog = toRef(false);
 let city = toRef('');
 
-const onCityAdd = async () => {
-  dialog.value = false;
-  emit('cityAdd', city.value);
+async function onCityAdd() {
+  const data = await getCityWeather(city.value);
+  const newCity = {
+    city: city.value,
+    currentWeather: data
+  };
+  await addDoc(collection(db, "cities"), newCity);
+  citiesStore.addCity(newCity);
+}
+
+const onAppReload = () => {
+  location.reload();
+}
+
+const onEditToggle = () => {
+  emit("editToggle", !props.isEdit);
 }
 </script>
