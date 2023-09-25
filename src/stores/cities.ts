@@ -8,14 +8,14 @@ export type RootState = {
 
 export const useCitiesStore = defineStore('cities', {
   state: () =>({
-    cities: [],
+    cities: {},
   } as RootState),
   actions: {
     addCity(city:City) {
-      this.cities = [...this.cities, city];
+      this.cities = {...this.cities, ...city};
     },
-    removeCity(cityName:string) {
-      this.cities.filter((city:City) => city.city !== cityName);
+    removeCity(cityId:string) {
+      delete this.cities[cityId];
     }
   }
 })

@@ -2,6 +2,7 @@
   <v-card
     max-width="368"
     class="pa-2 ma-2"
+    @click="gotoWeather"
   >
     <v-card-item :title="city.city">
     </v-card-item>
@@ -16,7 +17,7 @@
         </v-col>
 
         <v-col cols="6" class="text-right">
-          <v-img :src="`https://openweathermap.org/img/wn/${icon}@2x.png`" :title="description" />
+          <v-img :src="`https://openweathermap.org/img/wn/${icon}@4x.png`" :title="description" />
         </v-col>
       </v-row>
     </v-card-text>
@@ -84,21 +85,21 @@
 
 <script setup lang="ts">
 import { toRef } from 'vue';
+import { useRouter } from 'vue-router'
 import db from '../firebase/firebase';
-import { doc, collection, getDocs, updateDoc, addDoc, query, where } from 'firebase/firestore/lite';
-import type { City } from '../lib/lib';
+import { doc, deleteDoc } from 'firebase/firestore/lite';
+import type { CityObject } from '../lib/lib';
 import { useCitiesStore } from '../stores/cities';
 
 const props = defineProps<{
-  city: City,
+  id: string,
+  city: CityObject,
   isEdit: boolean
 }>();
 
 const citiesStore = useCitiesStore();
+const router = useRouter();
 
-const citiesCol = collection(db, 'cities');
-
-console.log("city.value", props.city)
 let expand = toRef(false);
 const round = (num:number) => { return Math.round(num); }
 const capitalizeFirstLetter = (str:string) => { return str.charAt(0).toUpperCase() + str.slice(1); }
@@ -116,11 +117,18 @@ const onExpandClick = () => {
   expand.value = !expand.value;
 }
 
-const onDeleteClick = () => {
-  citiesStore.removeCity(props.city.city);
-  const q = query(citiesCol, where("city", "==", props.city.city));
-  console.log('q', q)
-  console.log(doc(db, "cities", props.city.city))
+const onDeleteClick = async () => {
+  try {
+    const docRef = doc(db, 'cities', props.id);
+    await deleteDoc(docRef);
+    citiesStore.removeCity(props.id);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+const gotoWeather = () => {
+  router.push({ name: "city weather", params: { id: props.id } });
 }
 
 </script>

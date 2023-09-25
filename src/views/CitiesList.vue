@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import CityCard from "../components/CityCard.vue";
+import type { City } from '@/lib/lib';
+
 defineProps<{
-  cities: object[],
+  cities: City,
   loading: boolean,
   isEdit: boolean
 }>();
@@ -26,12 +28,13 @@ defineProps<{
     </v-row>
     <v-row v-else no-gutters>
       <v-col
-        v-for="(city, index) in cities"
-        :key="index"
+        v-for="[id, city] in Object.entries(cities)"
+        :key="id"
         sm="4"
         md="3"
       >
         <CityCard
+          :id="id"
           :city="city"
           :isEdit="isEdit"
         />

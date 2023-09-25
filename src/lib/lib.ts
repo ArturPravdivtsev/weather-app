@@ -4,7 +4,7 @@ interface Weather {
   main: string
 }
 
-export interface City {
+export interface CityObject {
   city: string,
   currentWeather: {
     weather: [Weather],
@@ -21,4 +21,8 @@ export interface City {
       speed: number
     }
   }
+}
+
+export interface City {
+  [id:string]: CityObject
 }
