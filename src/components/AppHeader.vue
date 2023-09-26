@@ -1,30 +1,26 @@
 <template>
   <v-toolbar
+    v-if="route.name === 'city weather'"
+  >qqq</v-toolbar>
+  <v-toolbar
+    v-else
     density="comfortable"
     :elevation="8"
   >
-    <!-- <v-btn icon>
-      <v-icon>mdi-menu</v-icon>
-    </v-btn> -->
-
     <v-toolbar-title>Weather App</v-toolbar-title>
-
     <v-spacer></v-spacer>
-
     <v-btn
       icon
       @click="onEditToggle"
     >
       <v-icon>mdi-pencil</v-icon>
     </v-btn>
-
     <v-btn
       icon
       @click="onAppReload"
     >
       <v-icon>mdi-sync</v-icon>
     </v-btn>
-
     <v-dialog
       v-model="dialog"
       width="800"
@@ -63,6 +59,7 @@
 </template>
 
 <script setup lang="ts">
+import { useRoute } from 'vue-router';
 import { toRef } from 'vue';
 import { collection, addDoc } from 'firebase/firestore/lite';
 import { useCitiesStore } from '../stores/cities';
@@ -79,6 +76,9 @@ const emit = defineEmits<{
   cityAdd: [city: string],
   editToggle: [isEdit: boolean]
 }>();
+
+const route = useRoute();
+console.log('route', route)
 
 let dialog = toRef(false);
 let city = toRef('');

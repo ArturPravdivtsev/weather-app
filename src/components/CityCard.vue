@@ -128,7 +128,7 @@ const onDeleteClick = async () => {
 }
 
 const gotoWeather = () => {
-  router.push({ name: "city weather", params: { id: props.id } });
+  router.push({ name: "city weather", params: { city: props.city.city } });
 }
 
 </script>

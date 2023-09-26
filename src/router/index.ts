@@ -11,19 +11,11 @@ const router = createRouter({
       component: CitiesList
     },
     {
-      path: '/weather/:id',
+      path: '/weather/:city',
       name: 'city weather',
       component: CityWeather
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
     }
   ]
-})
+});
 
-export default router
+export default router;
