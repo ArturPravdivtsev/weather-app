@@ -5,6 +5,7 @@ interface Weather {
 }
 
 export interface CurrentWeather {
+  name: string,
   weather: [Weather],
   main: {
     feels_like: number,
@@ -31,4 +32,29 @@ export interface CityObject {
 
 export interface City {
   [id:string]: CityObject
+}
+
+export const currentWeatherItem = {
+  name: '',
+  weather: [{
+    description: '',
+    icon: '',
+    main: ''
+  }],
+  main: {
+    feels_like: 0,
+    humidity: 0,
+    pressure: 0,
+    temp: 0,
+    temp_max: 0,
+    temp_min: 0
+  },
+  wind: {
+    deg: 0,
+    speed: 0
+  },
+  coord: {
+    lat: 0,
+    lon: 0
+  }
 }

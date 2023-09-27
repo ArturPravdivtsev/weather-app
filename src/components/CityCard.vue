@@ -86,10 +86,10 @@
 <script setup lang="ts">
 import { toRef } from 'vue';
 import { useRouter } from 'vue-router'
-import db from '../firebase/firebase';
+import db from '@/firebase/firebase';
 import { doc, deleteDoc } from 'firebase/firestore/lite';
-import type { CityObject } from '../lib/lib';
-import { useCitiesStore } from '../stores/cities';
+import type { CityObject } from '@/lib/lib';
+import { useCitiesStore } from '@/stores/cities';
 
 const props = defineProps<{
   id: string,
@@ -127,8 +127,9 @@ const onDeleteClick = async () => {
   }
 }
 
-const gotoWeather = () => {
-  router.push({ name: "city weather", params: { city: props.city.city } });
+const gotoWeather = (evt) => {
+  console.log('evt', evt)
+  if (evt.target !== 'span.v-btn__content') router.push({ name: "city weather", params: { city: props.city.city } });
 }
 
 </script>

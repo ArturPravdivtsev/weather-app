@@ -7,16 +7,16 @@
 
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
-import AppHeader from './components/AppHeader.vue';
+import AppHeader from '@/components/AppHeader.vue';
 
 import { onMounted } from 'vue';
-import db from './firebase/firebase';
+import db from '@/firebase/firebase';
 import { doc, collection, getDocs, updateDoc } from 'firebase/firestore/lite';
 import { toRef } from 'vue';
 
-import { getCityWeather } from './lib/api';
+import { getCityWeather } from '@/lib/api';
 
-import { useCitiesStore } from './stores/cities';
+import { useCitiesStore } from '@/stores/cities';
 
 let loading = toRef(true);
 let isEdit = toRef(false);
