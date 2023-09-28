@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import CityCard from "../components/CityCard.vue";
-import type { City } from '@/lib/lib';
+import type { City } from '@/lib/types';
 
 defineProps<{
   cities: City,
@@ -42,3 +42,4 @@ defineProps<{
     </v-row>
   </v-container>
 </template>
+@/lib/types

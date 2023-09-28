@@ -2,12 +2,16 @@
   <v-card
     class="pa-2 ma-2"
   >
-    <v-card-item :title="currentWeather.name">
+    <v-card-item class="pt-6" :title="currentWeather.name">
     </v-card-item>
-    <v-card-text class="py-0">
+    <v-card-text class="pt-12">
+      <!-- <span class="bg night"></span> -->
+      <div class="weather-icon">
+        <img src="/moon.png" />
+      </div>
       <v-row align="center" no-gutters>
         <v-col
-          class="text-h2"
+          class="text-h1"
           cols="6"
         >
         {{ round(currentWeather.main.temp) }}&deg;
@@ -15,23 +19,41 @@
       </v-row>
       <v-row align="center" no-gutters>
         <v-col
-          class="text-h2"
           cols="3"
         >
           <v-list class="bg-transparent d-inline-flex">
-            <v-list-item
-              :title="round(currentWeather.main.temp_max)"
-              append-icon="mdi-thermometer-chevron-up"
-            >
-            </v-list-item>
-            <v-list-item
-              :title="round(currentWeather.main.temp_min)"
-              append-icon="mdi-thermometer-chevron-down"
-            >
-            </v-list-item>
+            <p class="text-subtitle-1 ma-2">{{ round(currentWeather.main.temp_max) }} <v-icon>mdi-thermometer-chevron-up</v-icon></p>
+            <p class="text-subtitle-1 ma-2">{{ round(currentWeather.main.temp_min) }} <v-icon>mdi-thermometer-chevron-down</v-icon></p>
           </v-list>
         </v-col>
       </v-row>
+      <v-row>
+        <v-col>
+          <p class="text-h5">{{ capitalizeFirstLetter(currentWeather.weather[0].description) }}</p>
+          <p class="text-subtitle-1">Feels like {{ round(currentWeather.main.temp_max) }}&deg;</p>
+        </v-col>
+      </v-row>
+    </v-card-text>
+    <v-divider color="info" class="mt-12"></v-divider>
+    <v-card-text>
+      <v-slide-group
+        show-arrows
+      >
+        <v-slide-group-item
+          v-for="n in 25"
+          :key="n"
+          v-slot="{ isSelected, toggle }"
+        >
+          <v-btn
+            class="ma-2"
+            rounded
+            :color="isSelected ? 'primary' : undefined"
+            @click="toggle"
+          >
+            Options {{ n }}
+          </v-btn>
+        </v-slide-group-item>
+      </v-slide-group>
     </v-card-text>
   </v-card>
 </template>
@@ -41,14 +63,14 @@ import { useRoute } from 'vue-router';
 import db from '@/firebase/firebase';
 import { collection, query, where, getDocs } from "firebase/firestore/lite";
 import { toRef } from 'vue';
-import type { CurrentWeather } from '@/lib/lib';
-import { currentWeatherItem } from '@/lib/lib';
+import type { CurrentWeather } from '@/lib/types';
+import { currentWeatherItem } from '@/lib/types';
 import { getCityWeatherOneCall } from '@/lib/api';
+import { round, capitalizeFirstLetter } from '@/lib/lib';
 
 const route = useRoute();
 let currentWeather = toRef<CurrentWeather>(currentWeatherItem);
 let forecast = toRef(null);
-const round = (num:number) => { return Math.round(num); }
 
 const q = query(collection(db, "cities"), where("city", "==", route.params.city));
 
@@ -64,3 +86,34 @@ console.log('currentWeather', currentWeather.value)
 console.log('forecast', forecast.value)
 
 </script>
+
+<style scoped>
+.bg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-size: cover;
+  z-index: -1;
+}
+.day {
+  background: url('../../public/sun.png') no-repeat center center;
+}
+.night {
+  background: url('../../public/moon.png') no-repeat center center;
+}
+
+.weather-icon {
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: -180px;
+  display: flex;
+  align-items: center;
+}
+.weather-icon img {
+  width: 366px;
+  height: 366px;
+}
+</style>

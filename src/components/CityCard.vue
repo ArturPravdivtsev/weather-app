@@ -88,8 +88,9 @@ import { toRef } from 'vue';
 import { useRouter } from 'vue-router'
 import db from '@/firebase/firebase';
 import { doc, deleteDoc } from 'firebase/firestore/lite';
-import type { CityObject } from '@/lib/lib';
+import type { CityObject } from '@/lib/types';
 import { useCitiesStore } from '@/stores/cities';
+import { round, capitalizeFirstLetter } from '@/lib/lib';
 
 const props = defineProps<{
   id: string,
@@ -101,8 +102,6 @@ const citiesStore = useCitiesStore();
 const router = useRouter();
 
 let expand = toRef(false);
-const round = (num:number) => { return Math.round(num); }
-const capitalizeFirstLetter = (str:string) => { return str.charAt(0).toUpperCase() + str.slice(1); }
 const temperature:number = round(props.city.currentWeather.main.temp);
 const icon:string = props.city.currentWeather.weather[0].icon;
 const description:string = capitalizeFirstLetter(props.city.currentWeather.weather[0].description);
@@ -132,4 +131,4 @@ const gotoWeather = (evt) => {
   if (evt.target !== 'span.v-btn__content') router.push({ name: "city weather", params: { city: props.city.city } });
 }
 
-</script>
+</script>@/lib/types

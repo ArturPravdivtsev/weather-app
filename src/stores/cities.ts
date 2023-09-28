@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import type { City } from '../lib/lib';
+import type { City } from '../lib/types';
 
 export type RootState = {
   cities: City[];
