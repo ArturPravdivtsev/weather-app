@@ -36,24 +36,8 @@
     </v-card-text>
     <v-divider color="info" class="mt-12"></v-divider>
     <v-card-text>
-      <v-slide-group
-        show-arrows
-      >
-        <v-slide-group-item
-          v-for="n in 25"
-          :key="n"
-          v-slot="{ isSelected, toggle }"
-        >
-          <v-btn
-            class="ma-2"
-            rounded
-            :color="isSelected ? 'primary' : undefined"
-            @click="toggle"
-          >
-            Options {{ n }}
-          </v-btn>
-        </v-slide-group-item>
-      </v-slide-group>
+      <HourlyWeather :forecast="hourlyForecast" />
+      <WeaklyWeather :forecast="weeklyForecast" />
     </v-card-text>
   </v-card>
 </template>
@@ -62,28 +46,35 @@
 import { useRoute } from 'vue-router';
 import db from '@/firebase/firebase';
 import { collection, query, where, getDocs } from "firebase/firestore/lite";
-import { toRef } from 'vue';
+import { onBeforeMount, toRef } from 'vue';
 import type { CurrentWeather } from '@/lib/types';
 import { currentWeatherItem } from '@/lib/types';
-import { getCityWeatherOneCall } from '@/lib/api';
+import { getCityWeatherHourly, getCityWeatherWeekly } from '@/lib/api';
 import { round, capitalizeFirstLetter } from '@/lib/lib';
+import HourlyWeather from '@/components/HourlyWeather.vue';
+import WeaklyWeather from '@/components/WeaklyWeather.vue';
 
 const route = useRoute();
 let currentWeather = toRef<CurrentWeather>(currentWeatherItem);
-let forecast = toRef(null);
+let hourlyForecast = toRef([]);
+let weeklyForecast = toRef([]);
 
 const q = query(collection(db, "cities"), where("city", "==", route.params.city));
 
-getDocs(q)
+onBeforeMount(() => {
+  getDocs(q)
   .then((docs) => {
     docs.forEach(async (doc) => {
       currentWeather.value = doc.data().currentWeather;
-      forecast.value = await getCityWeatherOneCall(currentWeather.value.coord.lat, currentWeather.value.coord.lon);
+      hourlyForecast.value = (await getCityWeatherHourly(currentWeather.value.coord.lat, currentWeather.value.coord.lon)).list;
+      console.log('hourlyForecast.value', hourlyForecast.value)
+      weeklyForecast.value = (await getCityWeatherWeekly(currentWeather.value.coord.lat, currentWeather.value.coord.lon)).list;
+      console.log('weeklyForecast.value', weeklyForecast.value)
     })
-  });
+});
+})
 
-console.log('currentWeather', currentWeather.value)
-console.log('forecast', forecast.value)
+// const filteredList = () => forecast.value ? forecast.hourly.slice(0, 23) : [];
 
 </script>
 

@@ -10,10 +10,18 @@ export const getCityWeather = async (city: string) => {
   return data;
 }
 
-export const getCityWeatherOneCall = async (lat: number, lon:number) => {
+export const getCityWeatherHourly = async (lat: number, lon:number) => {
+  const response = await axios.get(
+    `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&exclude=current,minutley,alerts&units=metric&appid=${API_KEY}`
+  );
+  const data = response.data;
+  return data;
+}
+
+export const getCityWeatherWeekly = async (lat: number, lon:number) => {
   console.log('lat, lon', lat, lon)
   const response = await axios.get(
-    `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&exclude=current,minutley,alerts&appid=${API_KEY}`
+    `https://api.openweathermap.org/data/2.5/forecast/daily?lat=${lat}&lon=${lon}&cnt=7&units=metric&appid=${API_KEY}`
   );
   const data = response.data;
   return data;

@@ -58,3 +58,16 @@ export const currentWeatherItem = {
     lon: 0
   }
 }
+
+export interface Forecast {
+  dt: number,
+  weather: [Weather],
+  main: {
+    feels_like: number,
+    humidity: number,
+    pressure: number,
+    temp: number,
+    temp_max: number,
+    temp_min: number
+  }
+}
