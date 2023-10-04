@@ -10,11 +10,8 @@ import { RouterView } from 'vue-router';
 import AppHeader from '@/components/AppHeader.vue';
 
 import { onMounted } from 'vue';
-import db from '@/firebase/firebase';
-import { doc, collection, getDocs, updateDoc } from 'firebase/firestore/lite';
-import { toRef } from 'vue';
-
-import { getCityWeather } from '@/lib/api';
+import { toRef, ref } from 'vue';
+import type { City } from '@/lib/types';
 
 import { useCitiesStore } from '@/stores/cities';
 
@@ -23,37 +20,46 @@ let isEdit = toRef(false);
 
 const citiesStore = useCitiesStore();
 
-const citiesCol = collection(db, 'cities');
+const savedCities = ref([]);
 
 async function getWeather() {
-  const citySnapshot = await getDocs(citiesCol);
+  if (localStorage.getItem('savedCities')) {
+    savedCities.value = JSON.parse(localStorage.getItem('savedCities'));
+  }
 
-  citySnapshot.docs.forEach(async (document) => {
-    const city = document.data();
-    try {
-      const data = await getCityWeather(city.city);
-      const docRef = doc(db, 'cities', document.id);
-      const id = document.id;
-      // console.log('docRef', docRef)
-      // console.log('city', city)
-      updateDoc(docRef, { currentWeather: data })
-        .then(() => citiesStore.addCity({
-          [id]: {
-            city: city.city,
-            currentWeather: data
-          }
-        }));
-      // citiesStore.addCity({
-      //   [id]: {
-      //       city: city.city,
-      //       currentWeather: city.currentWeather
-      //     }
-      //   })
-    } catch (err) {
-      console.log(err)
-    }
+  savedCities.value.forEach((city:City) => {
+    console.log('city', city)
+    citiesStore.addCity({
+      ...city
+    })
   });
-  console.log('citiesStore.cities', citiesStore.cities)
+
+  // citySnapshot.docs.forEach(async (document) => {
+  //   const city = document.data();
+  //   try {
+  //     const data = await getCityWeather(city.city);
+  //     const docRef = doc(db, 'cities', document.id);
+  //     const id = document.id;
+  //     // console.log('docRef', docRef)
+  //     // console.log('city', city)
+  //     updateDoc(docRef, { currentWeather: data })
+  //       .then(() => citiesStore.addCity({
+  //         [id]: {
+  //           city: city.city,
+  //           currentWeather: data
+  //         }
+  //       }));
+  //     // citiesStore.addCity({
+  //     //   [id]: {
+  //     //       city: city.city,
+  //     //       currentWeather: city.currentWeather
+  //     //     }
+  //     //   })
+  //   } catch (err) {
+  //     console.log(err)
+  //   }
+  // });
+  // console.log('citiesStore.cities', citiesStore.cities)
   loading.value = !loading.value;
 }
 

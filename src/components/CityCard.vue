@@ -17,7 +17,7 @@
         </v-col>
 
         <v-col cols="6" class="text-right">
-          <v-img :src="`https://openweathermap.org/img/wn/${icon}@4x.png`" :title="description" />
+          <v-img :src="icon" :title="description" />
         </v-col>
       </v-row>
     </v-card-text>
@@ -88,13 +88,12 @@ import { toRef } from 'vue';
 import { useRouter } from 'vue-router'
 import db from '@/firebase/firebase';
 import { doc, deleteDoc } from 'firebase/firestore/lite';
-import type { CityObject } from '@/lib/types';
+import type { City } from '@/lib/types';
 import { useCitiesStore } from '@/stores/cities';
 import { round, capitalizeFirstLetter } from '@/lib/lib';
 
 const props = defineProps<{
-  id: string,
-  city: CityObject,
+  city: City,
   isEdit: boolean
 }>();
 
@@ -102,15 +101,16 @@ const citiesStore = useCitiesStore();
 const router = useRouter();
 
 let expand = toRef(false);
-const temperature:number = round(props.city.currentWeather.main.temp);
-const icon:string = props.city.currentWeather.weather[0].icon;
-const description:string = capitalizeFirstLetter(props.city.currentWeather.weather[0].description);
-const windSpeed:string = (props.city.currentWeather.wind.speed * 3.6).toFixed(1);
-const humidity:number = props.city.currentWeather.main.humidity;
-const detailed = props.city.currentWeather.main;
-const tempMax:string = `${round(detailed.temp_max)}\xB0C`;
-const tempMin:string = `${round(detailed.temp_min)}\xB0C`;
-const feelsLike:string = `${round(detailed.feels_like)}\xB0C`;
+console.log('props.city', props.city)
+const temperature:number = round(props.city.current.temp_c);
+const icon:string = props.city.current.condition.icon;
+const description:string = capitalizeFirstLetter(props.city.forecast.day.condition.text);
+const windSpeed:number = round(props.city.current.wind_kph);
+const humidity:number = props.city.current.humidity;
+const detailed = props.city.forecast.day;
+const tempMax:string = `${round(detailed.maxtemp_c)}\xB0C`;
+const tempMin:string = `${round(detailed.mintemp_c)}\xB0C`;
+const feelsLike:string = `${round(props.city.current.feelslike_c)}\xB0C`;
 
 const onExpandClick = () => {
   expand.value = !expand.value;

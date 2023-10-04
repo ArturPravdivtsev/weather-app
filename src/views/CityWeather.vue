@@ -47,9 +47,9 @@ import { useRoute } from 'vue-router';
 import db from '@/firebase/firebase';
 import { collection, query, where, getDocs } from "firebase/firestore/lite";
 import { onBeforeMount, toRef } from 'vue';
-import type { CurrentWeather } from '@/lib/types';
-import { currentWeatherItem } from '@/lib/types';
-import { getCityWeatherHourly, getCityWeatherWeekly } from '@/lib/api';
+// import type { CurrentWeather } from '@/lib/types';
+// import { currentWeatherItem } from '@/lib/types';
+// import { getCityWeatherHourly, getCityWeatherWeekly } from '@/lib/api';
 import { round, capitalizeFirstLetter } from '@/lib/lib';
 import HourlyWeather from '@/components/HourlyWeather.vue';
 import WeaklyWeather from '@/components/WeaklyWeather.vue';
@@ -66,10 +66,10 @@ onBeforeMount(() => {
   .then((docs) => {
     docs.forEach(async (doc) => {
       currentWeather.value = doc.data().currentWeather;
-      hourlyForecast.value = (await getCityWeatherHourly(currentWeather.value.coord.lat, currentWeather.value.coord.lon)).list;
-      console.log('hourlyForecast.value', hourlyForecast.value)
-      weeklyForecast.value = (await getCityWeatherWeekly(currentWeather.value.coord.lat, currentWeather.value.coord.lon)).list;
-      console.log('weeklyForecast.value', weeklyForecast.value)
+      // hourlyForecast.value = (await getCityWeatherHourly(currentWeather.value.coord.lat, currentWeather.value.coord.lon)).list;
+      // console.log('hourlyForecast.value', hourlyForecast.value)
+      // weeklyForecast.value = (await getCityWeatherWeekly(currentWeather.value.coord.lat, currentWeather.value.coord.lon)).list;
+      // console.log('weeklyForecast.value', weeklyForecast.value)
     })
 });
 })
