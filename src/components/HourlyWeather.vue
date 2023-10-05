@@ -1,13 +1,13 @@
 <template>
 	<div class="hourly-weather">
 		<div class="container">
-			<div class="hourly-temp" v-for="(time, index) in forecast" :key="index">
+			<div class="hourly-temp" v-for="({ time, temp_c, condition }, index) in forecast" :key="index">
 				<div class="hour">
-					<span>{{ getTime(time.dt) }}</span>
+					<span>{{ getTime(time) }}</span>
 					<span>
-						<img :src="`/conditions/${time.weather[0].icon}.svg`" alt="" />
+						<img :src="getBigIcon(condition.icon)" alt="" />
 					</span>
-					<span>{{ Math.round(time.main.temp) }}&deg;</span>
+					<span>{{ Math.round(temp_c) }}&deg;</span>
 				</div>
 			</div>
 		</div>
@@ -15,13 +15,15 @@
 </template>
 
 <script setup lang="ts">
-import type { Forecast } from '@/lib/types';
-const props = defineProps<{
-  forecast: Forecast[]
+import type { HourForecast } from '@/lib/types';
+import { getBigIcon } from '@/lib/lib';
+
+defineProps<{
+  forecast: HourForecast[]
 }>();
 
-const getTime = (time:number) => {
-  return new Date(time * 1000).toLocaleString("en-us", { hour: "numeric" })
+const getTime = (time:string) => {
+  return new Date(time).toLocaleString("en-us", { hour: "numeric" })
 };
 </script>
 

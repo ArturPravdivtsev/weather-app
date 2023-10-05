@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
-import type { City } from '../lib/types';
+import type { City } from '@/lib/types';
+import { CityItem } from '@/lib/types';
 
 export type RootState = {
   cities: City[];
@@ -13,10 +14,15 @@ export const useCitiesStore = defineStore('cities', {
   actions: {
     addCity(city:City) {
       this.cities.push(city);
-      console.log('this.cities', this.cities)
     },
     removeCity(cityId:string) {
-      delete this.cities[cityId];
+      this.cities = this.cities.filter((city:City) => city.id !== cityId)
+    },
+    getCityByName(cityName:string):City {
+      return this.cities.find((city) => city.location.name === cityName) || CityItem;
+    },
+    getCityById(cityId:string):City {
+      return this.cities.find((city) => city.id === cityId) || CityItem;
     }
   }
 })

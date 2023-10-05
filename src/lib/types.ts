@@ -78,9 +78,28 @@ interface Condition {
   text: string
 }
 
+export interface HourForecast {
+  temp_c: number,
+  time: string,
+  condition: Condition
+}
+
+interface Forecastday {
+  day: {
+    avgtemp_c: number,
+    maxtemp_c: number,
+    mintemp_c: number,
+    condition: Condition,
+    daily_chance_of_rain: number,
+    maxwind_kph: number
+  },
+  hour: HourForecast[]
+}
+
 export interface City {
   id: string,
   location: {
+    name: string,
     country: string,
     lat: number,
     lon: number
@@ -94,13 +113,53 @@ export interface City {
     humidity: number
   },
   forecast: {
-    day: {
-      avgtemp_c: number,
-      maxtemp_c: number,
-      mintemp_c: number,
-      condition: Condition,
-      daily_chance_of_rain: number,
-      maxwind_kph: number
-    }
+    forecastday: Forecastday[]
+  }
+}
+
+export const CityItem = {
+  id: '',
+  location: {
+    name: '',
+    country: '',
+    lat: 0,
+    lon: 0
+  },
+  current: {
+    feelslike_c: 0,
+    is_day: 0,
+    temp_c: 0,
+    wind_kph: 0,
+    condition: {
+      code: 0,
+      icon: '',
+      text: ''
+    },
+    humidity: 0
+  },
+  forecast:{
+    forecastday: [{
+      day: {
+        avgtemp_c: 0,
+        maxtemp_c: 0,
+        mintemp_c: 0,
+        condition: {
+          code: 0,
+          icon: '',
+          text: ''
+        },
+        daily_chance_of_rain: 0,
+        maxwind_kph: 0
+      },
+      hour: [{
+        temp_c: 0,
+        time: '',
+        condition: {
+          code: 0,
+          icon: '',
+          text: ''
+        }
+      }]
+    }]
   }
 }

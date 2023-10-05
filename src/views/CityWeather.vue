@@ -2,7 +2,7 @@
   <v-card
     class="pa-2 ma-2"
   >
-    <v-card-item class="pt-6" :title="currentWeather.name">
+    <v-card-item class="pt-6" :title="currentWeather.location.name">
     </v-card-item>
     <v-card-text class="pt-12">
       <!-- <span class="bg night"></span> -->
@@ -14,7 +14,7 @@
           class="text-h1"
           cols="6"
         >
-        {{ round(currentWeather.main.temp) }}&deg;
+        {{ round(currentWeather.current.temp_c) }}&deg;
         </v-col>
       </v-row>
       <v-row align="center" no-gutters>
@@ -22,15 +22,15 @@
           cols="3"
         >
           <v-list class="bg-transparent d-inline-flex">
-            <p class="text-subtitle-1 ma-2">{{ round(currentWeather.main.temp_max) }} <v-icon>mdi-thermometer-chevron-up</v-icon></p>
-            <p class="text-subtitle-1 ma-2">{{ round(currentWeather.main.temp_min) }} <v-icon>mdi-thermometer-chevron-down</v-icon></p>
+            <p class="text-subtitle-1 ma-2">{{ round(currentWeather.forecast.forecastday[0].day.maxtemp_c) }} <v-icon>mdi-thermometer-chevron-up</v-icon></p>
+            <p class="text-subtitle-1 ma-2">{{ round(currentWeather.forecast.forecastday[0].day.mintemp_c) }} <v-icon>mdi-thermometer-chevron-down</v-icon></p>
           </v-list>
         </v-col>
       </v-row>
       <v-row>
         <v-col>
-          <p class="text-h5">{{ capitalizeFirstLetter(currentWeather.weather[0].description) }}</p>
-          <p class="text-subtitle-1">Feels like {{ round(currentWeather.main.temp_max) }}&deg;</p>
+          <p class="text-h5">{{ capitalizeFirstLetter(currentWeather.current.condition.text) }}</p>
+          <p class="text-subtitle-1">Feels like {{ round(currentWeather.current.feelslike_c) }}&deg;</p>
         </v-col>
       </v-row>
     </v-card-text>
@@ -44,37 +44,20 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
-import db from '@/firebase/firebase';
-import { collection, query, where, getDocs } from "firebase/firestore/lite";
-import { onBeforeMount, toRef } from 'vue';
-// import type { CurrentWeather } from '@/lib/types';
-// import { currentWeatherItem } from '@/lib/types';
-// import { getCityWeatherHourly, getCityWeatherWeekly } from '@/lib/api';
+import { toRef } from 'vue';
+import type { City } from '@/lib/types';
+import { useCitiesStore } from '@/stores/cities';
 import { round, capitalizeFirstLetter } from '@/lib/lib';
 import HourlyWeather from '@/components/HourlyWeather.vue';
 import WeaklyWeather from '@/components/WeaklyWeather.vue';
 
 const route = useRoute();
-let currentWeather = toRef<CurrentWeather>(currentWeatherItem);
-let hourlyForecast = toRef([]);
-let weeklyForecast = toRef([]);
+const citiesStore = useCitiesStore();
 
-const q = query(collection(db, "cities"), where("city", "==", route.params.city));
-
-onBeforeMount(() => {
-  getDocs(q)
-  .then((docs) => {
-    docs.forEach(async (doc) => {
-      currentWeather.value = doc.data().currentWeather;
-      // hourlyForecast.value = (await getCityWeatherHourly(currentWeather.value.coord.lat, currentWeather.value.coord.lon)).list;
-      // console.log('hourlyForecast.value', hourlyForecast.value)
-      // weeklyForecast.value = (await getCityWeatherWeekly(currentWeather.value.coord.lat, currentWeather.value.coord.lon)).list;
-      // console.log('weeklyForecast.value', weeklyForecast.value)
-    })
-});
-})
-
-// const filteredList = () => forecast.value ? forecast.hourly.slice(0, 23) : [];
+const currentWeather = toRef<City>(citiesStore.getCityByName(route.params.city.toString()));
+console.log('currentWeather.value.forecast.forecastday[0]', currentWeather.value)
+const hourlyForecast = toRef(currentWeather.value.forecast.forecastday[0].hour);
+const weeklyForecast = toRef([]);
 
 </script>
 
@@ -98,8 +81,8 @@ onBeforeMount(() => {
 .weather-icon {
   height: 100%;
   position: absolute;
-  top: 0;
-  right: -180px;
+  top: -150px;
+  right: 0;
   display: flex;
   align-items: center;
 }

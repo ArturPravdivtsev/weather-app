@@ -1,3 +1,5 @@
-export const round:(num:number) => number = (num:number) => { return Math.round(num); }
+export const round:(num:number) => number = (num:number) => Math.round(num);
 
-export const capitalizeFirstLetter:(num:string) => string = (str:string) => { return str.charAt(0).toUpperCase() + str.slice(1); }
+export const capitalizeFirstLetter:(str:string) => string = (str:string) => str.charAt(0).toUpperCase() + str.slice(1);
+
+export const getBigIcon = (icon:string) => icon.replace('64x64', '128x128');

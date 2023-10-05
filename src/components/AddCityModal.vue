@@ -36,18 +36,16 @@
 </template>
 
 <script setup lang="ts">
-import { toRef, ref } from 'vue';
-import { collection, addDoc } from 'firebase/firestore/lite';
+import { toRef } from 'vue';
 import { useCitiesStore } from '@/stores/cities';
 import { getCityWeather } from '@/lib/api';
-import db from '@/firebase/firebase';
 import { uid } from 'uid/single';
 
 const citiesStore = useCitiesStore();
 
 let dialog = toRef(false);
 let city = toRef('');
-const savedCities:[] = toRef([]);
+const savedCities = toRef<[]>([]);
 
 async function onCityAdd() {
   if (localStorage.getItem('savedCities')) {

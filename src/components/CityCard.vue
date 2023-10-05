@@ -1,16 +1,17 @@
 <template>
   <v-card
     max-width="368"
+    min-width="290"
     class="pa-2 ma-2"
     @click="gotoWeather"
   >
-    <v-card-item :title="city.city">
+    <v-card-item :title="props.city.location.name">
     </v-card-item>
 
     <v-card-text class="py-0">
       <v-row align="center" no-gutters>
         <v-col
-          class="text-h2"
+          class="text-h3"
           cols="6"
         >
           {{ temperature }}&deg;C
@@ -86,11 +87,9 @@
 <script setup lang="ts">
 import { toRef } from 'vue';
 import { useRouter } from 'vue-router'
-import db from '@/firebase/firebase';
-import { doc, deleteDoc } from 'firebase/firestore/lite';
 import type { City } from '@/lib/types';
 import { useCitiesStore } from '@/stores/cities';
-import { round, capitalizeFirstLetter } from '@/lib/lib';
+import { round, capitalizeFirstLetter, getBigIcon } from '@/lib/lib';
 
 const props = defineProps<{
   city: City,
@@ -101,13 +100,13 @@ const citiesStore = useCitiesStore();
 const router = useRouter();
 
 let expand = toRef(false);
-console.log('props.city', props.city)
+console.log('props.city.forecast', props.city.forecast)
 const temperature:number = round(props.city.current.temp_c);
-const icon:string = props.city.current.condition.icon;
-const description:string = capitalizeFirstLetter(props.city.forecast.day.condition.text);
+const icon:string = getBigIcon(props.city.current.condition.icon);
+const description:string = capitalizeFirstLetter(props.city.forecast.forecastday[0].day.condition.text);
 const windSpeed:number = round(props.city.current.wind_kph);
 const humidity:number = props.city.current.humidity;
-const detailed = props.city.forecast.day;
+const detailed = props.city.forecast.forecastday[0].day;
 const tempMax:string = `${round(detailed.maxtemp_c)}\xB0C`;
 const tempMin:string = `${round(detailed.mintemp_c)}\xB0C`;
 const feelsLike:string = `${round(props.city.current.feelslike_c)}\xB0C`;
@@ -117,18 +116,15 @@ const onExpandClick = () => {
 }
 
 const onDeleteClick = async () => {
-  try {
-    const docRef = doc(db, 'cities', props.id);
-    await deleteDoc(docRef);
-    citiesStore.removeCity(props.id);
-  } catch (err) {
-    console.log(err);
+  const savedCities = JSON.parse(localStorage.getItem('savedCities')).filter((city:City) => city.id !== props.city.id);
+  localStorage.setItem('savedCities', JSON.stringify(savedCities))
+  citiesStore.removeCity(props.city.id);
+}
+
+const gotoWeather = (evt: { target: string; }) => {
+  if (evt.target !== 'span.v-btn__content') {
+    router.push({ name: "city weather", params: { city: props.city.location.name } });
   }
 }
 
-const gotoWeather = (evt) => {
-  console.log('evt', evt)
-  if (evt.target !== 'span.v-btn__content') router.push({ name: "city weather", params: { city: props.city.city } });
-}
-
-</script>@/lib/types
+</script>

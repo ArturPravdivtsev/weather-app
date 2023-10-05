@@ -7,13 +7,13 @@
 
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
-import AppHeader from '@/components/AppHeader.vue';
-
 import { onMounted } from 'vue';
 import { toRef, ref } from 'vue';
 import type { City } from '@/lib/types';
-
 import { useCitiesStore } from '@/stores/cities';
+import { getCityWeather } from '@/lib/api';
+import AppHeader from '@/components/AppHeader.vue';
+
 
 let loading = toRef(true);
 let isEdit = toRef(false);
@@ -22,44 +22,20 @@ const citiesStore = useCitiesStore();
 
 const savedCities = ref([]);
 
-async function getWeather() {
+function getWeather() {
   if (localStorage.getItem('savedCities')) {
     savedCities.value = JSON.parse(localStorage.getItem('savedCities'));
   }
 
-  savedCities.value.forEach((city:City) => {
+  savedCities.value.forEach(async (city:City) => {
     console.log('city', city)
+    const weather = await getCityWeather(city.location.name);
     citiesStore.addCity({
-      ...city
+      id: city.id,
+      ...weather
     })
   });
 
-  // citySnapshot.docs.forEach(async (document) => {
-  //   const city = document.data();
-  //   try {
-  //     const data = await getCityWeather(city.city);
-  //     const docRef = doc(db, 'cities', document.id);
-  //     const id = document.id;
-  //     // console.log('docRef', docRef)
-  //     // console.log('city', city)
-  //     updateDoc(docRef, { currentWeather: data })
-  //       .then(() => citiesStore.addCity({
-  //         [id]: {
-  //           city: city.city,
-  //           currentWeather: data
-  //         }
-  //       }));
-  //     // citiesStore.addCity({
-  //     //   [id]: {
-  //     //       city: city.city,
-  //     //       currentWeather: city.currentWeather
-  //     //     }
-  //     //   })
-  //   } catch (err) {
-  //     console.log(err)
-  //   }
-  // });
-  // console.log('citiesStore.cities', citiesStore.cities)
   loading.value = !loading.value;
 }
 
