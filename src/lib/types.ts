@@ -84,7 +84,7 @@ export interface HourForecast {
   condition: Condition
 }
 
-interface Forecastday {
+export interface Forecastday {
   day: {
     avgtemp_c: number,
     maxtemp_c: number,
@@ -93,6 +93,8 @@ interface Forecastday {
     daily_chance_of_rain: number,
     maxwind_kph: number
   },
+  date: string,
+  date_epoch: number,
   hour: HourForecast[]
 }
 

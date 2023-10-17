@@ -4,7 +4,7 @@
   >
     <v-card-item class="pt-6" :title="currentWeather.location.name">
     </v-card-item>
-    <v-card-text class="pt-12">
+    <v-card-text class="pt-12 weather-icon-wrapper">
       <!-- <span class="bg night"></span> -->
       <div class="weather-icon">
         <img src="/moon.png" />
@@ -55,9 +55,9 @@ const route = useRoute();
 const citiesStore = useCitiesStore();
 
 const currentWeather = toRef<City>(citiesStore.getCityByName(route.params.city.toString()));
-console.log('currentWeather.value.forecast.forecastday[0]', currentWeather.value)
+console.log('currentWeather.value.forecast.forecastday', currentWeather.value.forecast.forecastday)
 const hourlyForecast = toRef(currentWeather.value.forecast.forecastday[0].hour);
-const weeklyForecast = toRef([]);
+const weeklyForecast = toRef(currentWeather.value.forecast.forecastday);
 
 </script>
 
@@ -78,11 +78,15 @@ const weeklyForecast = toRef([]);
   background: url('../../public/moon.png') no-repeat center center;
 }
 
+.weather-icon-wrapper {
+  position: relative;
+}
+
 .weather-icon {
   height: 100%;
   position: absolute;
-  top: -150px;
-  right: 0;
+  top: -5%;
+  right: -15%;
   display: flex;
   align-items: center;
 }
