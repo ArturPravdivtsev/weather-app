@@ -10,8 +10,9 @@
     <v-spacer></v-spacer>
     <v-btn
       icon
+      @click="onChangeTemperatureUnit"
     >
-      <v-icon>mdi-temperature-celsius</v-icon>
+      <v-icon>{{ getUnitIcon() }}</v-icon>
     </v-btn>
   </v-toolbar>
   <v-toolbar
@@ -42,12 +43,14 @@ import { useRoute } from 'vue-router';
 import AddCityModal from '@/components/AddCityModal.vue';
 
 const props = defineProps<{
-  isEdit: boolean
+  isEdit: boolean,
+  temperatureUnit: string
 }>();
 
 const emit = defineEmits<{
   cityAdd: [city: string],
-  editToggle: [isEdit: boolean]
+  editToggle: [isEdit: boolean],
+  changeTemperatureUnit: []
 }>();
 
 const route = useRoute();
@@ -56,11 +59,22 @@ const month:string = new Date().toLocaleDateString("en-us", { month: "short" });
 const day:string = new Date().toLocaleDateString("en-us", { day: "2-digit" });
 const date:string = `${weekDay}, ${month} ${day}`;
 
+const getUnitIcon = () => {
+  console.log('props.temperatureUnit', props.temperatureUnit)
+  if (props.temperatureUnit === 'c') return "mdi-temperature-celsius";
+  else return "mdi-temperature-fahrenheit";
+}
+
 const onAppReload = () => {
   location.reload();
 }
 
 const onEditToggle = () => {
   emit("editToggle", !props.isEdit);
+}
+
+const onChangeTemperatureUnit = () => {
+  console.log('fififif')
+  emit("changeTemperatureUnit");
 }
 </script>

@@ -25,14 +25,26 @@ export const useCitiesStore = defineStore('cities', {
     removeCity(cityId:string) {
       this.cities = this.cities.filter((city:City) => city.id !== cityId)
     },
+    updateCity(cityId, newProps) {
+      this.cities = this.cities.map((city) => {
+        if (city.id === cityId) {
+          city = {
+            ...city,
+            ...newProps
+          }
+          console.log('newCity', city)
+        }
+        return city;
+      });
+    },
     getCityByName(cityName:string):City {
       console.log('this.cities', this.cities, cityName, this.cities.find(({ location }) => {
         console.log('location', location)
         return location.name === cityName}))
-      return this.cities.find((city) => city.location.name === cityName) || CityItem;
+      return this.cities.find((city) => city.location.name === cityName);
     },
     getCityById(cityId:string):City {
-      return this.cities.find((city) => city.id === cityId) || CityItem;
+      return this.cities.find((city) => city.id === cityId);
     }
   }
 })

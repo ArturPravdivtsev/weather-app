@@ -86,7 +86,7 @@ const weeklyForecast = toRef(currentWeather.value.forecast.forecastday);
   height: 100%;
   position: absolute;
   top: -5%;
-  right: -15%;
+  right: -175px;
   display: flex;
   align-items: center;
 }

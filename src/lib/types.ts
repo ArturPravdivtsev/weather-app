@@ -80,6 +80,7 @@ interface Condition {
 
 export interface HourForecast {
   temp_c: number,
+  temp_f: number,
   time: string,
   condition: Condition
 }
@@ -89,6 +90,9 @@ export interface Forecastday {
     avgtemp_c: number,
     maxtemp_c: number,
     mintemp_c: number,
+    avgtemp_f: number,
+    maxtemp_f: number,
+    mintemp_f: number,
     condition: Condition,
     daily_chance_of_rain: number,
     maxwind_kph: number
@@ -108,8 +112,10 @@ export interface City {
   },
   current: {
     feelslike_c: number,
+    feelslike_f: number,
     is_day: number,
     temp_c: number,
+    temp_f: number,
     wind_kph: number,
     condition: Condition,
     humidity: number
@@ -129,8 +135,10 @@ export const CityItem = {
   },
   current: {
     feelslike_c: 0,
+    feelslike_f: 0,
     is_day: 0,
     temp_c: 0,
+    temp_f: 0,
     wind_kph: 0,
     condition: {
       code: 0,
@@ -145,6 +153,9 @@ export const CityItem = {
         avgtemp_c: 0,
         maxtemp_c: 0,
         mintemp_c: 0,
+        avgtemp_f: 0,
+        maxtemp_f: 0,
+        mintemp_f: 0,
         condition: {
           code: 0,
           icon: '',
@@ -155,6 +166,7 @@ export const CityItem = {
       },
       hour: [{
         temp_c: 0,
+        temp_f: 0,
         time: '',
         condition: {
           code: 0,

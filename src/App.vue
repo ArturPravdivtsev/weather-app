@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col min-h-screen font-Roboto bg-weather-primary">
-    <AppHeader :isEdit="isEdit" @editToggle="onEditToggle" />
-    <RouterView :cities="citiesStore.cities" :loading="loading" :isEdit="isEdit" />
+    <AppHeader :isEdit="isEdit" :temperatureUnit="temperatureUnit" @editToggle="onEditToggle" @changeTemperatureUnit="onChangeTemperatureUnit" />
+    <RouterView :cities="citiesStore.cities" :loading="loading" :isEdit="isEdit" :temperatureUnit="temperatureUnit" />
   </div>
 </template>
 
@@ -17,6 +17,7 @@ import AppHeader from '@/components/AppHeader.vue';
 
 let loading = toRef(true);
 let isEdit = toRef(false);
+let temperatureUnit = toRef('c');
 
 const citiesStore = useCitiesStore();
 
@@ -30,10 +31,14 @@ function getWeather() {
   savedCities.value.forEach(async (city:City) => {
     console.log('city', city)
     const weather = await getCityWeather(city.location.name);
-    citiesStore.addCity({
-      id: city.id,
-      ...weather
-    })
+    console.log('citiesStore', citiesStore.cities)
+    console.log('weather', weather)
+    citiesStore.updateCity(city.id, weather);
+    // citiesStore.addCity({
+    //   id: city.id,
+    //   ...weather
+    // });
+    console.log('citiesStore', citiesStore.cities)
   });
 
   loading.value = !loading.value;
@@ -41,6 +46,11 @@ function getWeather() {
 
 function onEditToggle(newVal: boolean) {
   isEdit.value = newVal;
+}
+
+function onChangeTemperatureUnit() {
+  if (temperatureUnit.value === 'c') temperatureUnit = ref('f');
+  if (temperatureUnit.value === 'f') temperatureUnit = ref('c');
 }
 
 
