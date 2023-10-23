@@ -12,7 +12,7 @@
       icon
       @click="onChangeTemperatureUnit"
     >
-      <v-icon>{{ getUnitIcon() }}</v-icon>
+      <v-icon>{{ icon }}</v-icon>
     </v-btn>
   </v-toolbar>
   <v-toolbar
@@ -34,17 +34,24 @@
     >
       <v-icon>mdi-sync</v-icon>
     </v-btn>
+    <v-btn
+      icon
+      @click="onChangeTemperatureUnit"
+    >
+      <v-icon>{{ icon }}</v-icon>
+    </v-btn>
     <AddCityModal />
   </v-toolbar>
 </template>
 
 <script setup lang="ts">
+import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
+import { useSettingsStore } from '@/stores/settings';
 import AddCityModal from '@/components/AddCityModal.vue';
 
 const props = defineProps<{
-  isEdit: boolean,
-  temperatureUnit: string
+  isEdit: boolean
 }>();
 
 const emit = defineEmits<{
@@ -53,17 +60,15 @@ const emit = defineEmits<{
   changeTemperatureUnit: []
 }>();
 
+const settingsStore = useSettingsStore();
+
 const route = useRoute();
 const weekDay:string = new Date().toLocaleDateString("en-us", { weekday: "short" });
 const month:string = new Date().toLocaleDateString("en-us", { month: "short" });
 const day:string = new Date().toLocaleDateString("en-us", { day: "2-digit" });
 const date:string = `${weekDay}, ${month} ${day}`;
 
-const getUnitIcon = () => {
-  console.log('props.temperatureUnit', props.temperatureUnit)
-  if (props.temperatureUnit === 'c') return "mdi-temperature-celsius";
-  else return "mdi-temperature-fahrenheit";
-}
+let icon = computed(() => settingsStore.temperatureUnit === 'c' ? "mdi-temperature-celsius" : "mdi-temperature-fahrenheit")
 
 const onAppReload = () => {
   location.reload();
@@ -74,7 +79,6 @@ const onEditToggle = () => {
 }
 
 const onChangeTemperatureUnit = () => {
-  console.log('fififif')
-  emit("changeTemperatureUnit");
+  settingsStore.toggleTemperatureUnit();
 }
 </script>

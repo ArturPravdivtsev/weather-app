@@ -1,13 +1,13 @@
 <template>
 	<div class="hourly-weather">
 		<div class="container">
-			<div class="hourly-temp" v-for="({ time, temp_c, condition }, index) in forecast" :key="index">
+			<div class="hourly-temp" v-for="(weather, index) in forecast" :key="index">
 				<div class="hour">
-					<span>{{ getTime(time) }}</span>
+					<span>{{ getTime(weather.time) }}</span>
 					<span>
-						<img :src="getBigIcon(condition.icon)" alt="" />
+						<img :src="getBigIcon(weather.condition.icon)" alt="" />
 					</span>
-					<span>{{ Math.round(temp_c) }}&deg;</span>
+					<span>{{ computed(() => round(weather[`temp_${settingsStore.temperatureUnit}`]) ) }}&deg;</span>
 				</div>
 			</div>
 		</div>
@@ -15,16 +15,22 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import type { HourForecast } from '@/lib/types';
 import { getBigIcon } from '@/lib/lib';
+import { useSettingsStore } from '@/stores/settings';
+import { round } from '@/lib/lib';
 
 defineProps<{
   forecast: HourForecast[]
 }>();
 
+const settingsStore = useSettingsStore();
+
 const getTime = (time:string) => {
   return new Date(time).toLocaleString("en-us", { hour: "numeric" })
 };
+
 </script>
 
 <style scoped>

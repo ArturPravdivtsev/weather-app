@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col min-h-screen font-Roboto bg-weather-primary">
-    <AppHeader :isEdit="isEdit" :temperatureUnit="temperatureUnit" @editToggle="onEditToggle" @changeTemperatureUnit="onChangeTemperatureUnit" />
-    <RouterView :cities="citiesStore.cities" :loading="loading" :isEdit="isEdit" :temperatureUnit="temperatureUnit" />
+    <AppHeader :isEdit="isEdit" @editToggle="onEditToggle" />
+    <RouterView :cities="citiesStore.cities" :loading="loading" :isEdit="isEdit" />
   </div>
 </template>
 
@@ -14,12 +14,10 @@ import { useCitiesStore } from '@/stores/cities';
 import { getCityWeather } from '@/lib/api';
 import AppHeader from '@/components/AppHeader.vue';
 
+const citiesStore = useCitiesStore();
 
 let loading = toRef(true);
 let isEdit = toRef(false);
-let temperatureUnit = toRef('c');
-
-const citiesStore = useCitiesStore();
 
 const savedCities = ref([]);
 
@@ -29,16 +27,16 @@ function getWeather() {
   }
 
   savedCities.value.forEach(async (city:City) => {
-    console.log('city', city)
+    // console.log('city', city)
     const weather = await getCityWeather(city.location.name);
-    console.log('citiesStore', citiesStore.cities)
-    console.log('weather', weather)
+    // console.log('citiesStore', citiesStore.cities)
+    // console.log('weather', weather)
     citiesStore.updateCity(city.id, weather);
     // citiesStore.addCity({
     //   id: city.id,
     //   ...weather
     // });
-    console.log('citiesStore', citiesStore.cities)
+    // console.log('citiesStore', citiesStore.cities)
   });
 
   loading.value = !loading.value;
@@ -48,10 +46,10 @@ function onEditToggle(newVal: boolean) {
   isEdit.value = newVal;
 }
 
-function onChangeTemperatureUnit() {
-  if (temperatureUnit.value === 'c') temperatureUnit = ref('f');
-  if (temperatureUnit.value === 'f') temperatureUnit = ref('c');
-}
+// function onChangeTemperatureUnit() {
+//   if (temperatureUnit.value === 'c') return temperatureUnit.value = 'f';
+//   if (temperatureUnit.value === 'f') return temperatureUnit.value = 'c';
+// }
 
 
 onMounted(() => {

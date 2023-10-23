@@ -19,19 +19,24 @@
 
     <div class="d-flex justify-space-between">
       <v-list class="bg-transparent d-inline-flex">
-        <p class="text-subtitle-1 ma-2">{{ round(day.day.maxtemp_c) }} <v-icon>mdi-thermometer-chevron-up</v-icon></p>
-        <p class="text-subtitle-1 ma-2">{{ round(day.day.mintemp_c) }} <v-icon>mdi-thermometer-chevron-down</v-icon></p>
+        <p class="text-subtitle-1 ma-2">{{ computed(() => round(day.day[`maxtemp_${settingsStore.temperatureUnit}`]) ) }} <v-icon>mdi-thermometer-chevron-up</v-icon></p>
+        <p class="text-subtitle-1 ma-2">{{ computed(() => round(day.day[`mintemp_${settingsStore.temperatureUnit}`]) ) }} <v-icon>mdi-thermometer-chevron-down</v-icon></p>
       </v-list>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import type { Forecastday } from '@/lib/types';
+import { useSettingsStore } from '@/stores/settings';
 import { round, getBigIcon } from '@/lib/lib';
-const props = defineProps<{
+
+defineProps<{
   forecast: Forecastday[]
 }>();
+
+const settingsStore = useSettingsStore();
 
 const getDay = (date: string) => {
   return new Date(date).toLocaleString("en-us", { weekday: "long" });

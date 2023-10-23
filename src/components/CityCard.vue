@@ -14,7 +14,7 @@
           class="text-h3"
           cols="6"
         >
-          {{ temperature }}&deg;C
+          {{ temperature }}&deg;{{capitalizeFirstLetter(settingsStore.temperatureUnit)}}
         </v-col>
 
         <v-col cols="6" class="text-right">
@@ -85,10 +85,11 @@
 </template>
 
 <script setup lang="ts">
-import { toRef } from 'vue';
+import { toRef, ref, computed } from 'vue';
 import { useRouter } from 'vue-router'
 import type { City } from '@/lib/types';
 import { useCitiesStore } from '@/stores/cities';
+import { useSettingsStore } from '@/stores/settings';
 import { round, capitalizeFirstLetter, getBigIcon } from '@/lib/lib';
 
 const props = defineProps<{
@@ -97,19 +98,20 @@ const props = defineProps<{
 }>();
 
 const citiesStore = useCitiesStore();
+const settingsStore = useSettingsStore();
+
 const router = useRouter();
 
 let expand = toRef(false);
-console.log('props.city.forecast', props.city.forecast)
-const temperature:number = round(props.city.current.temp_c);
+const temperature = computed(() => round(props.city.current[`temp_${settingsStore.temperatureUnit}`]) );
 const icon:string = getBigIcon(props.city.current.condition.icon);
 const description:string = capitalizeFirstLetter(props.city.forecast.forecastday[0].day.condition.text);
 const windSpeed:number = round(props.city.current.wind_kph);
 const humidity:number = props.city.current.humidity;
 const detailed = props.city.forecast.forecastday[0].day;
-const tempMax:string = `${round(detailed.maxtemp_c)}\xB0C`;
-const tempMin:string = `${round(detailed.mintemp_c)}\xB0C`;
-const feelsLike:string = `${round(props.city.current.feelslike_c)}\xB0C`;
+const tempMax = computed(() => `${round(detailed[`maxtemp_${settingsStore.temperatureUnit}`])}\xB0${capitalizeFirstLetter(settingsStore.temperatureUnit)}` );
+const tempMin = computed(() => `${round(detailed[`mintemp_${settingsStore.temperatureUnit}`])}\xB0${capitalizeFirstLetter(settingsStore.temperatureUnit)}` );
+const feelsLike = computed(() => `${round(props.city.current[`feelslike_${settingsStore.temperatureUnit}`])}\xB0${capitalizeFirstLetter(settingsStore.temperatureUnit)}` );
 
 const onExpandClick = () => {
   expand.value = !expand.value;
@@ -121,8 +123,9 @@ const onDeleteClick = async () => {
   citiesStore.removeCity(props.city.id);
 }
 
-const gotoWeather = (evt: { target: string; }) => {
-  if (evt.target !== 'span.v-btn__content') {
+const gotoWeather = (evt: { target: { classList: [string] } }) => {
+  // console.log('evt.target', evt.target, evt.target.classList, evt.target.classList[0] !== 'v-btn__content')
+  if (evt.target.classList[0] !== 'v-btn__content') {
     router.push({ name: "city weather", params: { city: props.city.location.name } });
   }
 }

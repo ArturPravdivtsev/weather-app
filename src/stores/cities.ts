@@ -36,11 +36,9 @@ export const useCitiesStore = defineStore('cities', {
         }
         return city;
       });
+      console.log('this.cities', this.cities)
     },
     getCityByName(cityName:string):City {
-      console.log('this.cities', this.cities, cityName, this.cities.find(({ location }) => {
-        console.log('location', location)
-        return location.name === cityName}))
       return this.cities.find((city) => city.location.name === cityName);
     },
     getCityById(cityId:string):City {
