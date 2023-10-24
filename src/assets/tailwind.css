@@ -1,3 +1,8 @@
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; */
+
+
+.v-text-field input.v-field__input {
+  padding-left: 10px;
+}

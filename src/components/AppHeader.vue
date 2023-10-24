@@ -8,12 +8,7 @@
     <v-spacer></v-spacer>
     <p>{{ date }}</p>
     <v-spacer></v-spacer>
-    <v-btn
-      icon
-      @click="onChangeTemperatureUnit"
-    >
-      <v-icon>{{ icon }}</v-icon>
-    </v-btn>
+    <ChangeUnitButton />
   </v-toolbar>
   <v-toolbar
     v-else
@@ -34,21 +29,16 @@
     >
       <v-icon>mdi-sync</v-icon>
     </v-btn>
-    <v-btn
-      icon
-      @click="onChangeTemperatureUnit"
-    >
-      <v-icon>{{ icon }}</v-icon>
-    </v-btn>
+    <ChangeUnitButton />
     <AddCityModal />
   </v-toolbar>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { useSettingsStore } from '@/stores/settings';
+import moment from 'moment';
 import AddCityModal from '@/components/AddCityModal.vue';
+import ChangeUnitButton from '@/components/ChangeUnitButton.vue';
 
 const props = defineProps<{
   isEdit: boolean
@@ -56,19 +46,13 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   cityAdd: [city: string],
-  editToggle: [isEdit: boolean],
-  changeTemperatureUnit: []
+  editToggle: [isEdit: boolean]
 }>();
 
-const settingsStore = useSettingsStore();
 
 const route = useRoute();
-const weekDay:string = new Date().toLocaleDateString("en-us", { weekday: "short" });
-const month:string = new Date().toLocaleDateString("en-us", { month: "short" });
-const day:string = new Date().toLocaleDateString("en-us", { day: "2-digit" });
-const date:string = `${weekDay}, ${month} ${day}`;
 
-let icon = computed(() => settingsStore.temperatureUnit === 'c' ? "mdi-temperature-celsius" : "mdi-temperature-fahrenheit")
+const date:string = moment().format('ddd, MMM D');
 
 const onAppReload = () => {
   location.reload();
@@ -76,9 +60,5 @@ const onAppReload = () => {
 
 const onEditToggle = () => {
   emit("editToggle", !props.isEdit);
-}
-
-const onChangeTemperatureUnit = () => {
-  settingsStore.toggleTemperatureUnit();
 }
 </script>

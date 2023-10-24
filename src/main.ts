@@ -1,7 +1,7 @@
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import '@mdi/font/css/materialdesignicons.css';
-// import './assets/tailwind.css';
+import './assets/tailwind.css';
 
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';

@@ -118,9 +118,7 @@ const onExpandClick = () => {
 }
 
 const onDeleteClick = async () => {
-  const savedCities = JSON.parse(localStorage.getItem('savedCities')).filter((city:City) => city.id !== props.city.id);
-  localStorage.setItem('savedCities', JSON.stringify(savedCities))
-  citiesStore.removeCity(props.city.id);
+  // citiesStore.removeCity(props.city.id);
 }
 
 const gotoWeather = (evt: { target: { classList: [string] } }) => {

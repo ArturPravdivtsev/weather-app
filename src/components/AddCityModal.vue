@@ -45,13 +45,8 @@ const citiesStore = useCitiesStore();
 
 let dialog = toRef(false);
 let city = toRef('');
-const savedCities = toRef<[]>([]);
 
 async function onCityAdd() {
-  if (localStorage.getItem('savedCities')) {
-    savedCities.value = JSON.parse(localStorage.getItem('savedCities'));
-  }
-
   const weather = await getCityWeather(city.value);
   const newCityWeather = {
     id: uid(),
@@ -59,8 +54,7 @@ async function onCityAdd() {
   };
   console.log('newCityWeather', newCityWeather);
   citiesStore.addCity(newCityWeather);
-  savedCities.value.push(newCityWeather);
-  localStorage.setItem('savedCities', JSON.stringify(savedCities.value))
   dialog.value = false;
+  city.value = '';
 }
 </script>

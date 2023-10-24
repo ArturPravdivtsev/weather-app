@@ -11,7 +11,7 @@ defineProps<{
 
 <template>
   <v-container fluid>
-    <v-row v-if="loading" no-gutters>
+    <v-row v-if="loading">
       <v-col
         v-for="(index) in 4"
         :key="index"
@@ -26,7 +26,7 @@ defineProps<{
         ></v-card>
       </v-col>
     </v-row>
-    <v-row v-else no-gutters>
+    <v-row v-else>
       <v-col
         v-for="city in cities"
         :key="city.id"
@@ -41,4 +41,3 @@ defineProps<{
     </v-row>
   </v-container>
 </template>
-@/lib/types

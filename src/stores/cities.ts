@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import type { City } from '@/lib/types';
-import { CityItem } from '@/lib/types';
 
 export type RootState = {
   cities: City[];
@@ -21,11 +20,14 @@ export const useCitiesStore = defineStore('cities', {
   actions: {
     addCity(city:City) {
       this.cities.push(city);
+      localStorage.setItem('savedCities', JSON.stringify(this.cities))
     },
     removeCity(cityId:string) {
-      this.cities = this.cities.filter((city:City) => city.id !== cityId)
+      const newCitiesList = this.cities.filter((city:City) => city.id !== cityId);
+      this.cities = newCitiesList;
+      localStorage.setItem('savedCities', JSON.stringify(newCitiesList))
     },
-    updateCity(cityId, newProps) {
+    updateCity(cityId: string, newProps: object) {
       this.cities = this.cities.map((city) => {
         if (city.id === cityId) {
           city = {
@@ -38,10 +40,10 @@ export const useCitiesStore = defineStore('cities', {
       });
       console.log('this.cities', this.cities)
     },
-    getCityByName(cityName:string):City {
+    getCityByName(cityName:string):City|undefined {
       return this.cities.find((city) => city.location.name === cityName);
     },
-    getCityById(cityId:string):City {
+    getCityById(cityId:string):City|undefined {
       return this.cities.find((city) => city.id === cityId);
     }
   }
