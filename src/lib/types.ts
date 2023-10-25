@@ -97,6 +97,10 @@ export interface Forecastday {
     daily_chance_of_rain: number,
     maxwind_kph: number
   },
+  astro: {
+    sunset: string,
+    sunrise: string
+  },
   date: string,
   date_epoch: number,
   hour: HourForecast[]
@@ -118,7 +122,9 @@ export interface City {
     temp_f: number,
     wind_kph: number,
     condition: Condition,
-    humidity: number
+    humidity: number,
+    pressure_mb: number,
+    cloud: number
   },
   forecast: {
     forecastday: Forecastday[]
@@ -145,7 +151,9 @@ export const CityItem = {
       icon: '',
       text: ''
     },
-    humidity: 0
+    humidity: 0,
+    pressure_mb: 0,
+    cloud: 0
   },
   forecast:{
     forecastday: [{
@@ -163,6 +171,10 @@ export const CityItem = {
         },
         daily_chance_of_rain: 0,
         maxwind_kph: 0
+      },
+      astro: {
+        sunset: '',
+        sunrise: ''
       },
       hour: [{
         temp_c: 0,

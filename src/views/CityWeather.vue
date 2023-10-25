@@ -39,6 +39,31 @@
       <HourlyWeather :forecast='hourlyForecast' />
       <WeaklyWeather :forecast='weeklyForecast' />
     </v-card-text>
+    <v-divider color='info' class='mt-12'></v-divider>
+    <v-row>
+      <v-col>
+        <p class='text-subtitle-1'>Sunrise <br>{{ sunrise }}</p>
+      </v-col>
+      <v-col>
+        <p class='text-subtitle-1'>Sunset <br>{{ sunset }}</p>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <p class='text-subtitle-1'>Humidity <br>{{ humudity }}</p>
+      </v-col>
+      <v-col>
+        <p class='text-subtitle-1'>Cloudness <br>{{ cloud }}</p>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <p class='text-subtitle-1'>Wind <br>{{ wind }}</p>
+      </v-col>
+      <v-col>
+        <p class='text-subtitle-1'>Pressure <br>{{ pressure }}</p>
+      </v-col>
+    </v-row>
   </v-card>
 </template>
 
@@ -59,8 +84,11 @@ const currentWeather = computed(() => citiesStore.getCityByName(route.params.cit
 const hourlyForecast = toRef(currentWeather.value.forecast.forecastday[0].hour);
 const weeklyForecast = toRef(currentWeather.value.forecast.forecastday);
 
+console.log('currentWeather.value', currentWeather.value)
+
 const current = currentWeather.value.current;
 const dayForecast = currentWeather.value.forecast.forecastday[0].day;
+const astro = currentWeather.value.forecast.forecastday[0].astro;
 
 const temperature = computed(() => {
   if (isCelcsius(settingsStore.temperatureUnit)) return current.temp_c;
@@ -78,6 +106,13 @@ const tempMin = computed(() => {
   if (isCelcsius(settingsStore.temperatureUnit)) return dayForecast.mintemp_c;
   return dayForecast.mintemp_f;
 });
+
+const humudity = current.humidity;
+const pressure = current.pressure_mb;
+const wind = current.wind_kph;
+const cloud = current.cloud;
+const sunset = astro.sunset;
+const sunrise = astro.sunrise;
 
 </script>
 
