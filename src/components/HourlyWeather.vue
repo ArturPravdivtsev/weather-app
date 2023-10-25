@@ -1,14 +1,14 @@
 <template>
-	<div class="hourly-weather">
-		<div class="container">
-			<div class="hourly-temp" v-for="(weather, index) in forecast" :key="index">
-				<HourlyWeatherItem :weather="weather"/>
+	<div class='hourly-weather'>
+		<div class='container'>
+			<div class='hourly-temp' v-for='(weather, index) in forecast' :key='index'>
+				<HourlyWeatherItem :weather='weather'/>
 			</div>
 		</div>
 	</div>
 </template>
 
-<script setup lang="ts">
+<script setup lang='ts'>
 import type { HourForecast } from '@/lib/types';
 import HourlyWeatherItem from '@/components/HourlyWeatherItem.vue';
 

@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { isCelcsius, isFahrenheit } from '@/lib/lib';
 
 export const useSettingsStore = defineStore('settings', {
   state: () =>({
@@ -9,9 +10,8 @@ export const useSettingsStore = defineStore('settings', {
       return this.temperatureUnit;
     },
     toggleTemperatureUnit() {
-      // console.log('this.temperatureUnit', this.temperatureUnit)
-      if (this.temperatureUnit === 'c') return this.temperatureUnit = 'f';
-      if (this.temperatureUnit === 'f') return this.temperatureUnit = 'c';
+      if (isCelcsius(this.temperatureUnit)) return this.temperatureUnit = 'f';
+      if (isFahrenheit(this.temperatureUnit)) return this.temperatureUnit = 'c';
     }
   }
 })

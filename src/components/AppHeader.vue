@@ -1,8 +1,8 @@
 <template>
   <v-toolbar
     v-if="route.name === 'city weather'"
-    density="comfortable"
-    :elevation="8"
+    density='comfortable'
+    :elevation='8'
   >
     <AddCityModal />
     <v-spacer></v-spacer>
@@ -12,20 +12,20 @@
   </v-toolbar>
   <v-toolbar
     v-else
-    density="comfortable"
-    :elevation="8"
+    density='comfortable'
+    :elevation='8'
   >
     <v-toolbar-title>Weather App</v-toolbar-title>
     <v-spacer></v-spacer>
     <v-btn
       icon
-      @click="onEditToggle"
+      @click='onEditToggle'
     >
       <v-icon>mdi-pencil</v-icon>
     </v-btn>
     <v-btn
       icon
-      @click="onAppReload"
+      @click='onAppReload'
     >
       <v-icon>mdi-sync</v-icon>
     </v-btn>
@@ -34,7 +34,7 @@
   </v-toolbar>
 </template>
 
-<script setup lang="ts">
+<script setup lang='ts'>
 import { useRoute } from 'vue-router';
 import moment from 'moment';
 import AddCityModal from '@/components/AddCityModal.vue';
@@ -59,6 +59,6 @@ const onAppReload = () => {
 }
 
 const onEditToggle = () => {
-  emit("editToggle", !props.isEdit);
+  emit('editToggle', !props.isEdit);
 }
 </script>

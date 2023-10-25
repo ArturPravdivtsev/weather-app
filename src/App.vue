@@ -1,11 +1,11 @@
 <template>
-  <div class="flex flex-col min-h-screen font-Roboto bg-weather-primary">
-    <AppHeader :isEdit="isEdit" @editToggle="onEditToggle" />
-    <RouterView :cities="citiesStore.cities" :loading="loading" :isEdit="isEdit" />
+  <div class='flex flex-col min-h-screen font-Roboto bg-weather-primary'>
+    <AppHeader :isEdit='isEdit' @editToggle='onEditToggle' />
+    <RouterView :cities='citiesStore.cities' :loading='loading' :isEdit='isEdit' />
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang='ts'>
 import { RouterView } from 'vue-router';
 import { onMounted } from 'vue';
 import { toRef, ref } from 'vue';
@@ -45,12 +45,6 @@ function getWeather() {
 function onEditToggle(newVal: boolean) {
   isEdit.value = newVal;
 }
-
-// function onChangeTemperatureUnit() {
-//   if (temperatureUnit.value === 'c') return temperatureUnit.value = 'f';
-//   if (temperatureUnit.value === 'f') return temperatureUnit.value = 'c';
-// }
-
 
 onMounted(() => {
   getWeather();

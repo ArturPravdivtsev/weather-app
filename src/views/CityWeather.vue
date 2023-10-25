@@ -1,54 +1,53 @@
 <template>
   <v-card
-    class="pa-2 ma-2"
+    class='pa-2 ma-2'
   >
-    <v-card-item class="pt-6" :title="currentWeather.location.name">
+    <v-card-item class='pt-6' :title='currentWeather.location.name'>
     </v-card-item>
-    <v-card-text class="pt-12 weather-icon-wrapper">
-      <!-- <span class="bg night"></span> -->
-      <div class="weather-icon">
-        <img src="/moon.png" />
+    <v-card-text class='pt-12 weather-icon-wrapper'>
+      <!-- <span class='bg night'></span> -->
+      <div class='weather-icon'>
+        <img src='/moon.png' />
       </div>
-      <v-row align="center" no-gutters>
+      <v-row align='center' no-gutters>
         <v-col
-          class="text-h1"
-          cols="6"
+          class='text-h1'
+          cols='6'
         >
-          {{ temperature }}&deg;
+          {{ round(temperature) }}&deg;
         </v-col>
       </v-row>
-      <v-row align="center" no-gutters>
+      <v-row align='center' no-gutters>
         <v-col
-          cols="3"
+          cols='3'
         >
-          <v-list class="bg-transparent d-inline-flex">
-            <p class="text-subtitle-1 ma-2">{{ tempMax }} <v-icon>mdi-thermometer-chevron-up</v-icon></p>
-            <p class="text-subtitle-1 ma-2">{{ tempMin }} <v-icon>mdi-thermometer-chevron-down</v-icon></p>
+          <v-list class='bg-transparent d-inline-flex'>
+            <p class='text-subtitle-1 ma-2'>{{ round(tempMax) }} <v-icon>mdi-thermometer-chevron-up</v-icon></p>
+            <p class='text-subtitle-1 ma-2'>{{ round(tempMin) }} <v-icon>mdi-thermometer-chevron-down</v-icon></p>
           </v-list>
         </v-col>
       </v-row>
       <v-row>
         <v-col>
-          <p class="text-h5">{{ capitalizeFirstLetter(currentWeather.current.condition.text) }}</p>
-          <p class="text-subtitle-1">Feels like {{ feelsLike }}&deg;</p>
+          <p class='text-h5'>{{ capitalizeFirstLetter(current.condition.text) }}</p>
+          <p class='text-subtitle-1'>Feels like {{ round(feelsLike) }}&deg;</p>
         </v-col>
       </v-row>
     </v-card-text>
-    <v-divider color="info" class="mt-12"></v-divider>
+    <v-divider color='info' class='mt-12'></v-divider>
     <v-card-text>
-      <HourlyWeather :forecast="hourlyForecast" />
-      <WeaklyWeather :forecast="weeklyForecast" />
+      <HourlyWeather :forecast='hourlyForecast' />
+      <WeaklyWeather :forecast='weeklyForecast' />
     </v-card-text>
   </v-card>
 </template>
 
-<script setup lang="ts">
+<script setup lang='ts'>
 import { useRoute } from 'vue-router';
 import { toRef, computed } from 'vue';
-import type { City } from '@/lib/types';
 import { useCitiesStore } from '@/stores/cities';
 import { useSettingsStore } from '@/stores/settings';
-import { round, capitalizeFirstLetter } from '@/lib/lib';
+import { round, capitalizeFirstLetter, isCelcsius } from '@/lib/lib';
 import HourlyWeather from '@/components/HourlyWeather.vue';
 import WeaklyWeather from '@/components/WeaklyWeather.vue';
 
@@ -57,14 +56,28 @@ const citiesStore = useCitiesStore();
 const settingsStore = useSettingsStore();
 
 const currentWeather = computed(() => citiesStore.getCityByName(route.params.city.toString()));
-console.log('currentWeather', currentWeather.value)
 const hourlyForecast = toRef(currentWeather.value.forecast.forecastday[0].hour);
 const weeklyForecast = toRef(currentWeather.value.forecast.forecastday);
 
-const temperature = computed(() => round(currentWeather.value.current[`temp_${settingsStore.temperatureUnit}`]) );
-const feelsLike = computed(() => round(currentWeather.value.current[`feelslike_${settingsStore.temperatureUnit}`]) );
-const tempMax = computed(() => round(currentWeather.value.forecast.forecastday[0].day[`maxtemp_${settingsStore.temperatureUnit}`]) );
-const tempMin = computed(() => round(currentWeather.value.forecast.forecastday[0].day[`mintemp_${settingsStore.temperatureUnit}`]) );
+const current = currentWeather.value.current;
+const dayForecast = currentWeather.value.forecast.forecastday[0].day;
+
+const temperature = computed(() => {
+  if (isCelcsius(settingsStore.temperatureUnit)) return current.temp_c;
+  return current.temp_f;
+});
+const feelsLike = computed(() => {
+  if (isCelcsius(settingsStore.temperatureUnit)) return current.feelslike_c;
+  return current.feelslike_f;
+});
+const tempMax = computed(() => {
+  if (isCelcsius(settingsStore.temperatureUnit)) return dayForecast.maxtemp_c;
+  return dayForecast.maxtemp_f;
+});
+const tempMin = computed(() => {
+  if (isCelcsius(settingsStore.temperatureUnit)) return dayForecast.mintemp_c;
+  return dayForecast.mintemp_f;
+});
 
 </script>
 

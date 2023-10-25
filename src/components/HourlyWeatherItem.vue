@@ -1,19 +1,19 @@
 <template>
-  <div class="hour">
+  <div class='hour'>
     <span>{{ getTime(weather.time) }}</span>
     <span>
-      <img :src="getBigIcon(weather.condition.icon)" :title="weather.condition.text" />
+      <img :src='getBigIcon(weather.condition.icon)' :title='weather.condition.text' />
     </span>
-    <span>{{ temp }}&deg;</span>
+    <span>{{ round(temp) }}&deg;</span>
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang='ts'>
 import { computed } from 'vue';
 import moment from 'moment';
 import type { HourForecast } from '@/lib/types';
 import { useSettingsStore } from '@/stores/settings';
-import { getBigIcon } from '@/lib/lib';
+import { getBigIcon, isCelcsius } from '@/lib/lib';
 import { round } from '@/lib/lib';
 
 const props = defineProps<{
@@ -26,7 +26,10 @@ const getTime = (time:string) => {
   return moment(time).format('HH');
 };
 
-const temp = computed(() => round(props.weather[`temp_${settingsStore.temperatureUnit}`]) );
+const temp = computed(() => {
+  if (isCelcsius(settingsStore.temperatureUnit)) return props.weather.temp_c;
+  return props.weather.temp_f;
+});
 </script>
 
 <style>
