@@ -40,30 +40,38 @@
       <WeaklyWeather :forecast='weeklyForecast' />
     </v-card-text>
     <v-divider color='info' class='mt-12'></v-divider>
-    <v-row>
-      <v-col>
-        <p class='text-subtitle-1'>Sunrise <br>{{ sunrise }}</p>
-      </v-col>
-      <v-col>
-        <p class='text-subtitle-1'>Sunset <br>{{ sunset }}</p>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <p class='text-subtitle-1'>Humidity <br>{{ humudity }}</p>
-      </v-col>
-      <v-col>
-        <p class='text-subtitle-1'>Cloudness <br>{{ cloud }}</p>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <p class='text-subtitle-1'>Wind <br>{{ wind }}</p>
-      </v-col>
-      <v-col>
-        <p class='text-subtitle-1'>Pressure <br>{{ pressure }}</p>
-      </v-col>
-    </v-row>
+    <v-card-text class='pa-2 ma-2'>
+      <v-row>
+        <v-col>
+          <p class='text-subtitle-1'>Sunrise</p>
+          <p class='text-h6'>{{ sunrise }}</p>
+        </v-col>
+        <v-col>
+          <p class='text-subtitle-1'>Sunset</p>
+          <p class='text-h6'>{{ sunset }}</p>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <p class='text-subtitle-1'>Humidity</p>
+          <p class='text-h6'>{{ humudity }}</p>
+        </v-col>
+        <v-col>
+          <p class='text-subtitle-1'>Cloudness</p>
+          <p class='text-h6'>{{ cloud }}</p>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <p class='text-subtitle-1'>Wind</p>
+          <p class='text-h6'>{{ wind }}</p>
+        </v-col>
+        <v-col>
+          <p class='text-subtitle-1'>Pressure</p>
+          <p class='text-h6'>{{ pressure }}</p>
+        </v-col>
+      </v-row>
+    </v-card-text>
   </v-card>
 </template>
 

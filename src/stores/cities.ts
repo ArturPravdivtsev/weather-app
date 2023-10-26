@@ -40,6 +40,9 @@ export const useCitiesStore = defineStore('cities', {
       });
       console.log('this.cities', this.cities)
     },
+    checkCity(cityName:string) {
+      return !!this.getCityByName(cityName) || false;
+    },
     getCityByName(cityName:string):City|undefined {
       return this.cities.find((city) => city.location.name === cityName);
     },

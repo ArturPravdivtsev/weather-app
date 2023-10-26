@@ -148,7 +148,7 @@ const onDeleteClick = async () => {
 
 const gotoWeather = (evt: { target: { classList: [string] } }) => {
   if (evt.target.classList[0] !== 'v-btn__content' && evt.target.classList[0] !== 'mdi-delete'  && evt.target.classList[0] !== 'v-btn') {
-    router.push({ name: "city weather", params: { city: props.city.location.name } });
+    router.push({ name: 'city weather', params: { city: props.city.location.name } });
   }
 }
 
